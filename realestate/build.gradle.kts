@@ -22,6 +22,9 @@ dependencies {
 
 	implementation("org.springframework.boot:spring-boot-starter-security")
 
+  implementation("me.paulschwarz:spring-dotenv:4.0.0")
+
+
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	// Tomcat Jasper for JSP support
 	implementation ("org.apache.tomcat.embed:tomcat-embed-jasper:10.1.5") // Adjust the version as needed
@@ -37,6 +40,7 @@ dependencies {
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.mysql:mysql-connector-j")
+  runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
