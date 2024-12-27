@@ -7,9 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class AdminController {
 
-    @GetMapping("/admin")
-    public String getAdminPage(Model model) {
-        return "admin/dashboard/show";
-    }
-
+  @GetMapping("/admin")
+  public String getAdminPage(Model model) {
+    return "admin/dashboard/show";
+  }
 }

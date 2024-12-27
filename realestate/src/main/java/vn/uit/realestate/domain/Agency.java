@@ -18,20 +18,25 @@ import lombok.Setter;
 @Table(name = "agency")
 public class Agency {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @NotBlank(message = "Khu vực môi giới không được để trống")
-    private String brokerageArea;
-    @NotBlank(message = "Loại hình môi giới không được để trống")
-    private String brokerageType;
-    @Valid
-    @OneToOne
-    @JoinColumn(name = "broker_certification_id")
-    private BrokerCertification brokerCertification;
-    @Valid
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-    private String activationStatus;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @NotBlank(message = "Khu vực môi giới không được để trống")
+  private String brokerageArea;
+
+  @NotBlank(message = "Loại hình môi giới không được để trống")
+  private String brokerageType;
+
+  @Valid
+  @OneToOne
+  @JoinColumn(name = "broker_certification_id")
+  private BrokerCertification brokerCertification;
+
+  @Valid
+  @OneToOne
+  @JoinColumn(name = "user_id")
+  private User user;
+
+  private String activationStatus;
 }

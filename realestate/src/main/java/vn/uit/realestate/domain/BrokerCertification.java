@@ -16,15 +16,19 @@ import lombok.Setter;
 @Table(name = "broker_certification")
 public class BrokerCertification {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long certificationId;
-    @NotBlank(message = "Tên trên chứng chỉ không được để trống")
-    private String nameOnCertification;
-    @NotBlank(message = "Số chứng chỉ không được để trống")
-    private String certificationNumber;
-    @NotBlank(message = "Cơ quan cấp chứng chỉ không được để trống")
-    private String certificationAuthority;
-    @OneToOne(mappedBy = "brokerCertification")
-    private Agency agency;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long certificationId;
+
+  @NotBlank(message = "Tên trên chứng chỉ không được để trống")
+  private String nameOnCertification;
+
+  @NotBlank(message = "Số chứng chỉ không được để trống")
+  private String certificationNumber;
+
+  @NotBlank(message = "Cơ quan cấp chứng chỉ không được để trống")
+  private String certificationAuthority;
+
+  @OneToOne(mappedBy = "brokerCertification")
+  private Agency agency;
 }

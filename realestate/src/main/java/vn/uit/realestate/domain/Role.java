@@ -1,57 +1,52 @@
 package vn.uit.realestate.domain;
 
-import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
 
 @Entity
-@Table (name="roles")
+@Table(name = "roles")
 public class Role {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private long id;
-    private String name;
-    private String description;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    @OneToMany(mappedBy="role")
-    private List<User> users;
+  private String name;
+  private String description;
 
-    public long getId() {
-        return id;
-    }
+  @OneToMany(mappedBy = "role")
+  private List<User> users;
 
-    public void setId(long id) {
-        this.id = id;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setId(long id) {
+    this.id = id;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    @Override
-    public String toString() {
-        return "roles [id=" + id + ", name=" + name + ", description=" + description + "]";
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-
+  @Override
+  public String toString() {
+    return "roles [id=" + id + ", name=" + name + ", description=" + description + "]";
+  }
 }
-
