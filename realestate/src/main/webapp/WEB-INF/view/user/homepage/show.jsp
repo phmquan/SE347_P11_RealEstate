@@ -11,26 +11,29 @@
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
                     rel="stylesheet">
                 <link rel="stylesheet" href="/css/user/headbar.css">
-                <script
-                    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-                </style>
+
                 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
-                <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
-                    rel="stylesheet">
-                <link href="/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
-                <link href="/client/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+
+
+
+                <!-- Bootstrap JS and dependencies -->
+                <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
             </head>
 
             <body>
 
-                <!-- Headbar -->
                 <jsp:include page="../layout/header.jsp" />
                 <!--end headbar-->
                 <section class="mt-3 hero-section text-center">
                     <div class="container">
                         <div class="hero-text">
                             <h1>Buy, rent, or sell your property easily</h1>
-                            <p>A great platform to buy, sell, or even rent your properties without any commissions.</p>
+                            <p>A great platform to buy, sell, or even rent your properties without any
+                                commissions.</p>
                         </div>
                         <div class="d-flex justify-content-center mt-4">
                             <ul class="nav nav-tabs">
