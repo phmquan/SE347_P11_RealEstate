@@ -11,12 +11,7 @@
                 <span style="color: white;">Welcome,
                     <c:out value="${sessionScope.fullName}" />
                 </span>
-                <!-- <div class="input-group">
-    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..."
-        aria-describedby="btnNavbarSearch" />
-    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i
-            class="fas fa-search"></i></button>
-</div> -->
+
             </form>
             <!-- Navbar-->
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
