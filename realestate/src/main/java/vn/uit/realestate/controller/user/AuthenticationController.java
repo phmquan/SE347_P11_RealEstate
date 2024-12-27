@@ -23,10 +23,7 @@ public class AuthenticationController {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
-    @GetMapping("/")
-    public String getHelloUser(Model model) {
-        return "user/user";
-    }
+
     @GetMapping("/register")
     public String getRegisterPage(Model model) {
         model.addAttribute("registerUser", new RegisterDTO());
@@ -62,6 +59,7 @@ public class AuthenticationController {
     public String getAccessDeniedPage() {
         return "user/authentication/access_denied";
     }
+
     @PostMapping("/logout")
     public String getLogoutPage(Model model) {
         return "redirect:/login";

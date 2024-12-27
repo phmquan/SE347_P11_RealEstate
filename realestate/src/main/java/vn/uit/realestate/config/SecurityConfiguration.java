@@ -56,7 +56,7 @@ public class SecurityConfiguration {
                         DispatcherType.INCLUDE)
                 .permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/", "/login" , "/register", "/client/**", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/", "/login", "/register", "/client/**", "/css/**", "/js/**", "/images/**", "/register").permitAll()
                 .requestMatchers("/agency/**").hasRole("AGENCY")
                 .anyRequest().authenticated())
                 .sessionManagement((sessionManagement) -> sessionManagement
@@ -64,7 +64,7 @@ public class SecurityConfiguration {
                 .invalidSessionUrl("/logout?expired")
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(false))
-                .logout(logout->logout.deleteCookies("JSESSIONID").invalidateHttpSession(true))
+                .logout(logout -> logout.deleteCookies("JSESSIONID").invalidateHttpSession(true))
                 .rememberMe(rememberMe -> rememberMe.rememberMeServices(rememberMeServices()))
                 .formLogin(formLogin -> formLogin
                 .loginPage("/login")
