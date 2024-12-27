@@ -1,61 +1,86 @@
 package vn.uit.realestate.service;
 
 import java.util.List;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import vn.uit.realestate.domain.Agency;
 import vn.uit.realestate.domain.Role;
 import vn.uit.realestate.repository.AgencyRepository;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class AgencyService {
 
   private final AgencyRepository agencyRepository;
   private final UserService userService;
   private final BrokerCertificationService brokerCertificationService;
 
-  public AgencyService(
-      BrokerCertificationService brokerCertificationService,
-      UserService userService,
-      AgencyRepository agencyRepository) {
-    this.agencyRepository = agencyRepository;
-    this.userService = userService;
-    this.brokerCertificationService = brokerCertificationService;
-  }
-
   public List<Agency> getAllAgency() {
-    return this.agencyRepository.findAll();
+    return agencyRepository.findAll();
   }
 
   public Agency getAgencyById(Long id) {
-    return this.agencyRepository.findById(id).orElse(null);
+    return agencyRepository.findById(id).orElse(null);
+  }
+
+  public void deleteById(Long id) {
+    agencyRepository.deleteById(id);
   }
 
   public void handleSaveAgency(Agency agency) {
+    // Ensure role exists and assign it to the user
     Long roleId = agency.getUser().getRole().getId();
-    Role role = this.userService.getRoleById(roleId);
+    Role role = userService.getRoleById(roleId);
+
+    if (role == null) {
+      log.error("Role with ID {} not found.", roleId);
+      throw new IllegalArgumentException("Invalid Role ID.");
+    }
     agency.getUser().setRole(role);
-    this.userService.handleSaveUser(agency.getUser());
 
-    agency.setUser(agency.getUser());
+    // Save User
+    userService.handleSaveUser(agency.getUser());
 
-    this.brokerCertificationService.handleSaveBrokerCertification(agency.getBrokerCertification());
+    // Save Broker Certification
+    brokerCertificationService.handleSaveBrokerCertification(agency.getBrokerCertification());
 
-    agency.setBrokerCertification(agency.getBrokerCertification());
+    // Save Agency
+    agencyRepository.save(agency);
 
-    this.agencyRepository.save(agency);
+    log.info("Agency saved successfully: {}", agency);
   }
 
   public void handleUpdateAgency(Agency agency) {
-    Agency currentAgency = this.agencyRepository.findById(agency.getId()).orElse(null);
-    if (currentAgency == null) {
+    Optional<Agency> currentAgencyOpt = this.agencyRepository.findById(agency.getId());
+    if (currentAgencyOpt.isEmpty()) {
+      log.warn("Agency with ID {} not found.", agency.getId());
       return;
     }
-    currentAgency.getUser().setFullName(agency.getUser().getFullName());
-    currentAgency.getUser().setAddress(agency.getUser().getAddress());
-    currentAgency.getUser().setPhone(agency.getUser().getPhone());
-    currentAgency.getUser().setEmail(agency.getUser().getEmail());
 
-    currentAgency.setBrokerCertification(agency.getBrokerCertification());
-    this.agencyRepository.save(currentAgency);
+    Agency currentAgency = currentAgencyOpt.get();
+
+    // Update User details
+    if (agency.getUser() != null) {
+      currentAgency.getUser().setFullName(agency.getUser().getFullName());
+      currentAgency.getUser().setAddress(agency.getUser().getAddress());
+      currentAgency.getUser().setPhone(agency.getUser().getPhone());
+      currentAgency.getUser().setEmail(agency.getUser().getEmail());
+      this.userService.handleSaveUser(currentAgency.getUser());
+    }
+
+    // Update Broker Certification
+    if (agency.getBrokerCertification() != null) {
+      this.brokerCertificationService.handleSaveBrokerCertification(
+          agency.getBrokerCertification());
+      currentAgency.setBrokerCertification(agency.getBrokerCertification());
+    }
+
+    // Save updated Agency
+    agencyRepository.save(currentAgency);
+
+    log.info("Agency updated successfully: {}", currentAgency);
   }
 }
