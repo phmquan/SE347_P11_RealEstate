@@ -47,7 +47,11 @@ public class PropertyController {
   public String editPropertyForm(@PathVariable Long id, Model model) {
     propertyService
         .getPropertyById(id)
-        .ifPresent(property -> model.addAttribute("property", property));
+        .ifPresentOrElse(
+            property -> model.addAttribute("property", property),
+            () -> {
+              throw new IllegalArgumentException("Property not found");
+            });
 
     // Trả về file template `edit.html`
     return "properties/edit";
