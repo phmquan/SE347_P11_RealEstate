@@ -2,6 +2,7 @@ package vn.uit.realestate.controller.admin;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import vn.uit.realestate.service.UploadService;
 import vn.uit.realestate.service.UserService;
 
 @Controller
+@RequiredArgsConstructor
 public class AgencyController {
 
   private final UserService userService;
@@ -27,19 +29,6 @@ public class AgencyController {
   private final PasswordEncoder passwordEncoder;
   private final UploadService uploadService;
   private final BrokerCertificationService brokerCertificationService;
-
-  public AgencyController(
-      BrokerCertificationService brokerCertificationService,
-      UploadService uploadService,
-      AgencyService agencyService,
-      PasswordEncoder passwordEncoder,
-      UserService userService) {
-    this.agencyService = agencyService;
-    this.passwordEncoder = passwordEncoder;
-    this.userService = userService;
-    this.uploadService = uploadService;
-    this.brokerCertificationService = brokerCertificationService;
-  }
 
   @GetMapping("/admin/agency")
   public String getAgencyPage(Model model) {

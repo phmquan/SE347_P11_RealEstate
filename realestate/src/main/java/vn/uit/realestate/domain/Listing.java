@@ -19,26 +19,30 @@ import lombok.Setter;
 @Table(name = "listing")
 public class Listing {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "agency_id", nullable = false)
-    private Agency agency;
+  @OneToOne
+  @JoinColumn(name = "agency_id", nullable = false)
+  private Agency agency;
 
-    private String listingType; // sale, rent
-    private String listingStatus; // active, inactive, pending
-    @NotBlank(message = "Tiêu đề không được để trống")
-    @Size(min = 5, max = 50, message = "Tiêu đề phải có ít nhất 5 kí tự")
-    private String listingTitle;
-    @NotBlank(message = "Mô tả không được để trống")
-    @Size(min = 20, max = 1500, message = "Mô tả phải có ít nhất 20 kí tự")
-    @Column(columnDefinition = "MEDIUMTEXT")
-    private String listingDescription;
-    private String propertyType; //House, Apartment, Land
-    @OneToOne
-    @JoinColumn(name = "property_id", nullable = false)
-    private Property property;
+  private String listingType; // sale, rent
 
+  private String listingStatus; // active, inactive, pending
+
+  @NotBlank(message = "Tiêu đề không được để trống")
+  @Size(min = 5, max = 50, message = "Tiêu đề phải có ít nhất 5 kí tự")
+  private String listingTitle;
+
+  @NotBlank(message = "Mô tả không được để trống")
+  @Size(min = 20, max = 1500, message = "Mô tả phải có ít nhất 20 kí tự")
+  @Column(columnDefinition = "MEDIUMTEXT")
+  private String listingDescription;
+
+  private String propertyType; // House, Apartment, Land
+
+  @OneToOne
+  @JoinColumn(name = "property_id", nullable = false)
+  private Property property;
 }
