@@ -2,18 +2,16 @@ package vn.uit.realestate.service;
 
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.uit.realestate.domain.Listing;
 import vn.uit.realestate.repository.ListingRepository;
 
 @Service
+@RequiredArgsConstructor
 public class ListingService {
 
   private final ListingRepository listingRepository;
-
-  public ListingService(ListingRepository listingRepository) {
-    this.listingRepository = listingRepository;
-  }
 
   public List<Listing> getAllListings() {
     return listingRepository.findAll();
