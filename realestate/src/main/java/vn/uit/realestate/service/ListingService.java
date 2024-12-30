@@ -3,6 +3,8 @@ package vn.uit.realestate.service;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.uit.realestate.domain.Listing;
 import vn.uit.realestate.repository.ListingRepository;
@@ -15,6 +17,10 @@ public class ListingService {
 
   public List<Listing> getAllListings() {
     return listingRepository.findAll();
+  }
+
+  public Page<Listing> getAllListings(Pageable pageable) {
+    return listingRepository.findAll(pageable);
   }
 
   public Optional<Listing> getListingById(Long id) {

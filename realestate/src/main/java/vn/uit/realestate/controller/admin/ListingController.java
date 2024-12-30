@@ -1,10 +1,13 @@
 package vn.uit.realestate.controller.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import vn.uit.realestate.domain.Agency;
@@ -26,9 +29,62 @@ public class ListingController {
   private final AgencyService agencyService;
   private final PropertyService propertyService;
 
-  @GetMapping("/add")
-  public String chooseListingType(Model model) {
-    return "listings/chooseType";
+  @GetMapping("")
+  // The endpoint should be something like
+  // /admin/listings?page=0&size=30&sort=updatedAt,desc&sort=property.propertyPrice,asc&sort=property.district,asc
+  // page is beginning from 0
+  public String listListings(
+      @PageableDefault(
+              page = 0,
+              size = 30,
+              sort = {"updatedAt,desc", "property.propertyPrice,asc", "property.district,asc"})
+          Pageable pageable,
+      Model model) {
+    // the page had format like this
+    // data class PageResponse<T>(
+    //     val content: List<T>,
+    //     val totalElements: Int,
+    //     val totalPages: Int,
+    //     val last: Boolean,
+    //     val size: Int,
+    //     val number: Int,
+    //     val sort: {
+    //        val sorted: Boolean = false,
+    //        val unsorted: Boolean = true,
+    //        val empty: Boolean = true
+    //     },
+    //
+    //     val first: Boolean,
+    //     val numberOfElements: Int,
+    //     val empty: Boolean,
+    //     val pageable: {
+    //        val pageNumber: Int = 0,
+    //        val pageSize: Int,
+    //        val offset: Int,
+    //        val paged: Boolean,
+    //        val unpaged: Boolean,
+    //     }
+    // )
+    model.addAttribute("listings", listingService.getAllListings(pageable));
+    return "listings/list";
+  }
+
+  @GetMapping("/no-page")
+  public String listListingsNoPage(Model model) {
+    model.addAttribute("listings", listingService.getAllListings());
+    return "listings/list";
+  }
+
+  @GetMapping("/{id}")
+  public String viewListing(@PathVariable("id") Long id, Model model) {
+    listingService
+        .getListingById(id)
+        .ifPresentOrElse(
+            listing -> model.addAttribute("listing", listing),
+            () -> {
+              throw new IllegalArgumentException("Listing not found");
+            });
+    return "listings/view";
   }
 
   /**
@@ -37,7 +93,7 @@ public class ListingController {
    * @return add listing form
    */
   @GetMapping("/add")
-  public String addListingForm(@RequestParam String type, Model model) {
+  public String addListingForm(@RequestParam("type") String type, Model model) {
     switch (type.toLowerCase()) {
       case "house":
         model.addAttribute("listing", new House());
@@ -56,23 +112,21 @@ public class ListingController {
   }
 
   @PostMapping("/add")
+  @Transactional
   public String addListing(
       @AuthenticationPrincipal UserDetails userDetails,
-      @RequestParam String type,
-      @ModelAttribute Property property) {
-    Listing listing = new Listing();
+      @RequestParam("type") String type,
+      @ModelAttribute("listing") Property property) {
     Agency agency = agencyService.getAgencyByEmail(userDetails.getUsername());
     if (agency == null) {
       throw new UsernameNotFoundException("Agency not found");
     }
-    listing.setAgency(agency);
-    listing.setProperty(propertyService.addProperty(property));
-    listingService.addListing(listing);
+    propertyService.addProperty(property);
     return "redirect:/admin/listings";
   }
 
   @GetMapping("/edit/{id}")
-  public String editListingForm(@PathVariable Long id, Model model) {
+  public String editListingForm(@PathVariable("id") Long id, Model model) {
     listingService
         .getListingById(id)
         .ifPresentOrElse(
@@ -84,13 +138,15 @@ public class ListingController {
   }
 
   @PostMapping("/edit/{id}")
-  public String updateListing(@PathVariable Long id, @ModelAttribute Listing property) {
+  @Transactional
+  public String updateListing(
+      @PathVariable("id") Long id, @ModelAttribute("listing") Listing property) {
     listingService.updateListing(id, property);
     return "redirect:/admin/listings";
   }
 
   @PostMapping("/delete/{id}")
-  public String deleteListing(@PathVariable Long id) {
+  public String deleteListing(@PathVariable("id") Long id) {
     listingService.deleteListing(id);
     return "redirect:/admin/listings";
   }
