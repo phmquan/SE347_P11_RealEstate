@@ -26,6 +26,10 @@ public class AgencyService {
     return agencyRepository.findById(id).orElse(null);
   }
 
+  public Agency getAgencyByEmail(String username) {
+    return agencyRepository.findByUserEmail(username).orElse(null);
+  }
+
   public void deleteById(Long id) {
     agencyRepository.deleteById(id);
   }

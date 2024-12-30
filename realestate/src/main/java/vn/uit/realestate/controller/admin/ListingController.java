@@ -1,15 +1,19 @@
 package vn.uit.realestate.controller.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
+import vn.uit.realestate.domain.Agency;
 import vn.uit.realestate.domain.Apartment;
 import vn.uit.realestate.domain.House;
 import vn.uit.realestate.domain.Land;
 import vn.uit.realestate.domain.Listing;
 import vn.uit.realestate.domain.Property;
+import vn.uit.realestate.service.AgencyService;
 import vn.uit.realestate.service.ListingService;
 import vn.uit.realestate.service.PropertyService;
 
@@ -19,6 +23,7 @@ import vn.uit.realestate.service.PropertyService;
 public class ListingController {
 
   private final ListingService listingService;
+  private final AgencyService agencyService;
   private final PropertyService propertyService;
 
   @GetMapping("/add")
@@ -51,8 +56,16 @@ public class ListingController {
   }
 
   @PostMapping("/add")
-  public String addListing(@RequestParam String type, @ModelAttribute Property property) {
+  public String addListing(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @RequestParam String type,
+      @ModelAttribute Property property) {
     Listing listing = new Listing();
+    Agency agency = agencyService.getAgencyByEmail(userDetails.getUsername());
+    if (agency == null) {
+      throw new UsernameNotFoundException("Agency not found");
+    }
+    listing.setAgency(agency);
     listing.setProperty(propertyService.addProperty(property));
     listingService.addListing(listing);
     return "redirect:/admin/listings";
