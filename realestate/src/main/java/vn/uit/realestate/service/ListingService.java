@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.uit.realestate.domain.Listing;
+import vn.uit.realestate.domain.ListingStatus;
 import vn.uit.realestate.repository.ListingRepository;
 
 @Service
@@ -21,6 +22,14 @@ public class ListingService {
 
   public Page<Listing> getAllListings(Pageable pageable) {
     return listingRepository.findAll(pageable);
+  }
+
+  public Page<Listing> getAllListingsByStatus(ListingStatus status, Pageable pageable) {
+    return listingRepository.findByStatus(status, pageable);
+  }
+
+  public List<Listing> getAllListingsByStatus(ListingStatus status) {
+    return listingRepository.findByStatus(status);
   }
 
   public Optional<Listing> getListingById(Long id) {
