@@ -1,5 +1,6 @@
 package vn.uit.realestate.controller.admin;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import vn.uit.realestate.domain.Agency;
 import vn.uit.realestate.domain.Apartment;
 import vn.uit.realestate.domain.House;
@@ -19,6 +21,7 @@ import vn.uit.realestate.domain.Property;
 import vn.uit.realestate.service.AgencyService;
 import vn.uit.realestate.service.ListingService;
 import vn.uit.realestate.service.PropertyService;
+import vn.uit.realestate.service.UploadService;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,6 +31,7 @@ public class ListingController {
   private final ListingService listingService;
   private final AgencyService agencyService;
   private final PropertyService propertyService;
+  private final UploadService uploadService;
 
   @GetMapping("")
   // The endpoint should be something like
@@ -116,11 +120,20 @@ public class ListingController {
   public String addListing(
       @AuthenticationPrincipal UserDetails userDetails,
       @RequestParam("type") String type,
-      @ModelAttribute("listing") Property property) {
+      @ModelAttribute("listing") Property property,
+      @RequestParam("images") List<MultipartFile> images) {
     Agency agency = agencyService.getAgencyByEmail(userDetails.getUsername());
     if (agency == null) {
       throw new UsernameNotFoundException("Agency not found");
     }
+
+    if (images != null && !images.isEmpty()) {
+      property.setPropertyImages(
+          images.stream()
+              .map(file -> uploadService.handleSaveUploadFile(file, "property_images"))
+              .toList());
+    }
+
     propertyService.addProperty(property);
     return "redirect:/admin/listings";
   }
@@ -140,7 +153,18 @@ public class ListingController {
   @PostMapping("/edit/{id}")
   @Transactional
   public String updateListing(
-      @PathVariable("id") Long id, @ModelAttribute("listing") Listing property) {
+      @RequestParam("new_images") List<MultipartFile> newImages,
+      @PathVariable("id") Long id,
+      @ModelAttribute("listing") Listing property) {
+    if (newImages != null && !newImages.isEmpty()) {
+      property
+          .getProperty()
+          .getPropertyImages()
+          .addAll(
+              newImages.stream()
+                  .map(file -> uploadService.handleSaveUploadFile(file, "property_images"))
+                  .toList());
+    }
     listingService.updateListing(id, property);
     return "redirect:/admin/listings";
   }

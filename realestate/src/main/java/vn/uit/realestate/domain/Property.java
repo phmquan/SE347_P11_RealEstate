@@ -1,10 +1,13 @@
 package vn.uit.realestate.domain;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -44,5 +47,8 @@ public class Property {
   @NotBlank(message = "Giá không được để trống")
   private String propertyPrice;
 
-  @ElementCollection private List<String> propertyImages;
+  @ElementCollection
+  @CollectionTable(name = "property_images", joinColumns = @JoinColumn(name = "user_id"))
+  @Column(name = "property_image_url")
+  private List<String> propertyImages;
 }
