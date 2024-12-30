@@ -98,19 +98,22 @@ public class ListingController {
    */
   @GetMapping("/add")
   public String addListingForm(@RequestParam("type") String type, Model model) {
+    Property property;
     switch (type.toLowerCase()) {
       case "house":
-        model.addAttribute("listing", new House());
+        property = new House();
         break;
       case "land":
-        model.addAttribute("listing", new Land());
+        property = new Land();
         break;
       case "apartment":
-        model.addAttribute("listing", new Apartment());
+        property = new Apartment();
         break;
       default:
         throw new IllegalArgumentException("Invalid property type: " + type);
     }
+    property.setListing(new Listing());
+    model.addAttribute("listing", property);
     model.addAttribute("type", type);
     return "listings/add";
   }
@@ -126,6 +129,7 @@ public class ListingController {
     if (agency == null) {
       throw new UsernameNotFoundException("Agency not found");
     }
+    property.getListing().setAgency(agency);
 
     if (images != null && !images.isEmpty()) {
       property.setPropertyImages(

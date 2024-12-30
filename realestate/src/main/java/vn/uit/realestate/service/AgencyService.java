@@ -26,8 +26,8 @@ public class AgencyService {
     return agencyRepository.findById(id).orElse(null);
   }
 
-  public Agency getAgencyByEmail(String username) {
-    return agencyRepository.findByUserEmail(username).orElse(null);
+  public Agency getAgencyByEmail(String email) {
+    return agencyRepository.findByUserEmail(email).orElse(null);
   }
 
   public void deleteById(Long id) {
@@ -55,6 +55,10 @@ public class AgencyService {
     agencyRepository.save(agency);
 
     log.info("Agency saved successfully: {}", agency);
+  }
+
+  public Agency saveAgency(Agency agency) {
+    return agencyRepository.save(agency);
   }
 
   public void handleUpdateAgency(Agency agency) {
