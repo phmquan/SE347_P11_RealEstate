@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import java.time.Instant;
@@ -45,6 +46,8 @@ public class Listing {
   private String listingDescription;
 
   private String propertyType; // House, Apartment, Land
+
+  @NotNull private ListingStatus status = ListingStatus.PENDING;
 
   @OneToOne
   @JoinColumn(name = "property_id", nullable = false)

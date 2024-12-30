@@ -1,4 +1,4 @@
-package vn.uit.realestate.controller.admin;
+package vn.uit.realestate.controller.agency;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import vn.uit.realestate.service.UploadService;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin/listings")
+@RequestMapping("/agency/listings")
 public class ListingController {
 
   private final ListingService listingService;

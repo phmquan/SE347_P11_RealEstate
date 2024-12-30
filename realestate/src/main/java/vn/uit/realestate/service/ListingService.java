@@ -31,6 +31,10 @@ public class ListingService {
     return listingRepository.save(listing);
   }
 
+  public Listing updateListing(Listing updatedListing) {
+    return listingRepository.save(updatedListing);
+  }
+
   public Listing updateListing(Long id, Listing updatedListing) {
     return listingRepository
         .findById(id)
@@ -49,5 +53,9 @@ public class ListingService {
 
   public void deleteListing(Long id) {
     listingRepository.deleteById(id);
+  }
+
+  public List<Listing> searchListing(String keyword) {
+    return listingRepository.findByListingTitleContaining(keyword);
   }
 }
