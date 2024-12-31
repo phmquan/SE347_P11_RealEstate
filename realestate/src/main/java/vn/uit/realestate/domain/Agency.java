@@ -1,10 +1,15 @@
 package vn.uit.realestate.domain;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
@@ -18,25 +23,27 @@ import lombok.Setter;
 @Table(name = "agency")
 public class Agency {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @NotBlank(message = "Khu vực môi giới không được để trống")
-  private String brokerageArea;
+    @NotBlank(message = "Khu vực môi giới không được để trống")
+    private String brokerageArea;
 
-  @NotBlank(message = "Loại hình môi giới không được để trống")
-  private String brokerageType;
+    @NotBlank(message = "Loại hình môi giới không được để trống")
+    private String brokerageType;
 
-  @Valid
-  @OneToOne
-  @JoinColumn(name = "broker_certification_id")
-  private BrokerCertification brokerCertification;
+    @Valid
+    @OneToOne
+    @JoinColumn(name = "broker_certification_id")
+    private BrokerCertification brokerCertification;
 
-  @Valid
-  @OneToOne
-  @JoinColumn(name = "user_id")
-  private User user;
+    @Valid
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-  private String activationStatus;
+    private String activationStatus;
+    @OneToMany(mappedBy = "agency", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Listing> listings;
 }

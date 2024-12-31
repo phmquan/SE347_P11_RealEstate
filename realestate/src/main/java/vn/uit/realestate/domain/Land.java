@@ -10,8 +10,9 @@ import lombok.Setter;
 @Entity
 public class Land extends Property {
 
-  @NotBlank(message = "Loại đất không được để trống")
-  private String landType; // Đất nền, đất thổ cư, đất nông nghiệp, đất công nghiệp
+    @NotBlank(message = "Loại đất không được để trống")
+    private String landType; // Đất nền, đất thổ cư, đất nông nghiệp, đất công nghiệp
 
-  private String landDirection; // Hướng đất
+    private String landDirection; // Hướng đất
+
 }
