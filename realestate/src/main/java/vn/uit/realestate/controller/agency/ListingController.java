@@ -2,6 +2,9 @@ package vn.uit.realestate.controller.agency;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -23,6 +26,7 @@ import vn.uit.realestate.domain.Apartment;
 import vn.uit.realestate.domain.House;
 import vn.uit.realestate.domain.Land;
 import vn.uit.realestate.domain.Listing;
+import vn.uit.realestate.domain.ListingStatus;
 import vn.uit.realestate.domain.Property;
 import vn.uit.realestate.service.AgencyService;
 import vn.uit.realestate.service.ListingService;
@@ -40,52 +44,99 @@ public class ListingController {
     private final UploadService uploadService;
 
     @GetMapping("")
-    public String getAgencyHomepageListings(Model model) {
-        model.addAttribute("listings", listingService.getAllListings());
-        return "agency/homepage/show";
-    }
+    public String getAgencyHomepageListings(
+            Model model,
+            @RequestParam("status") String type,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            HttpServletRequest request) {
 
-    @GetMapping("/no-page")
-    public String listListingsNoPage(Model model) {
-        model.addAttribute("listings", listingService.getAllListings());
-        return "listings/list";
-    }
+        Pageable pageable = PageRequest.of(page, size);
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("email") == null) {
+            model.addAttribute("error", "Session expired. Please log in again.");
+            return "redirect:/login";
+        } else {
+            model.addAttribute("fullName", session.getAttribute("fullName"));
+            model.addAttribute("avatar", session.getAttribute("avatar"));
 
-    @GetMapping("/{id}")
-    public String viewListing(@PathVariable("id") Long id, Model model) {
-        listingService
-                .getListingById(id)
-                .ifPresentOrElse(
-                        listing -> model.addAttribute("listing", listing),
-                        () -> {
-                            throw new IllegalArgumentException("Listing not found");
-                        });
-        return "listings/view";
+        }
+        long displayingCount = listingService.countByStatus(ListingStatus.DISPLAYING);
+        long rejectedCount = listingService.countByStatus(ListingStatus.DECLINED);
+        long pendingCount = listingService.countByStatus(ListingStatus.PENDING);
+        long hiddenCount = listingService.countByStatus(ListingStatus.HIDDEN);
+        model.addAttribute("displayingCount", displayingCount);
+        model.addAttribute("rejectedCount", rejectedCount);
+        model.addAttribute("pendingCount", pendingCount);
+        model.addAttribute("hiddenCount", hiddenCount);
+        if (type == null) {
+            return "agency/listing";
+        } else {
+            Page<Listing> listings;
+            switch (type) {
+                case "pending" -> {
+                    listings = listingService.getAllListingsByStatus(ListingStatus.PENDING, pageable);
+
+                    model.addAttribute("listings", listings);
+                    break;
+                }
+                case "displaying" -> {
+                    listings = listingService.getAllListingsByStatus(ListingStatus.DISPLAYING, pageable);
+
+                    model.addAttribute("listings", listings);
+                    break;
+                }
+                case "rejected" -> {
+                    listings = listingService.getAllListingsByStatus(ListingStatus.DECLINED, pageable);
+
+                    model.addAttribute("listings", listings);
+                    break;
+                }
+                case "hidden" -> {
+                    listings = listingService.getAllListingsByStatus(ListingStatus.HIDDEN, pageable);
+
+                    model.addAttribute("listings", listings);
+                    break;
+                }
+                default -> {
+                    return "agency/homepage/show";
+                }
+            }
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", listings.getTotalPages());
+            model.addAttribute("totalItems", listings.getTotalElements());
+            return "agency/homepage/show";
+        }
     }
 
     @GetMapping("/create")
     public String getListingForm(@RequestParam("type") String type, Model model) {
-        switch (type) {
-            case "house" -> {
-                model.addAttribute("newListing", new Listing());
-                return "agency/listing/listingForm/houseForm";
-            }
+        if (type == null) {
+            return "agency/listing/createListing";
+        } else {
+            switch (type) {
+                case "house" -> {
+                    model.addAttribute("newListing", new Listing());
+                    return "agency/listing/listingForm/houseForm";
+                }
 
-            case "apartment" -> {
-                model.addAttribute("newListing", new Listing());
-                return "agency/listing/listingForm/apartmentForm";
-            }
+                case "apartment" -> {
+                    model.addAttribute("newListing", new Listing());
+                    return "agency/listing/listingForm/apartmentForm";
+                }
 
-            case "land" -> {
-                model.addAttribute("newListing", new Listing());
-                return "agency/listing/listingForm/landForm";
-            }
+                case "land" -> {
+                    model.addAttribute("newListing", new Listing());
+                    return "agency/listing/listingForm/landForm";
+                }
 
-            default -> {
-                return "agency/listing/createListing";
-            }
+                default -> {
+                    return "agency/listing/createListing";
+                }
 
+            }
         }
+
     }
 
     @PostMapping("/create")
@@ -118,18 +169,22 @@ public class ListingController {
 
         String email = session.getAttribute("email").toString();
         Agency agency = agencyService.getAgencyByEmail(email);
+        if (type == null) {
+            return "agency/listing/createListing";
+        } else {
+            return switch (type) {
+                case "house" ->
+                    handleHouseCreation(listing, agency, images);
+                case "apartment" ->
+                    handleApartmentCreation(listing, agency, images);
+                case "land" ->
+                    handleLandCreation(listing, agency, images);
+                default -> {
+                    yield "agency/listing/createListing";
+                }
+            };
+        }
 
-        return switch (type) {
-            case "house" ->
-                handleHouseCreation(listing, agency, images);
-            case "apartment" ->
-                handleApartmentCreation(listing, agency, images);
-            case "land" ->
-                handleLandCreation(listing, agency, images);
-            default -> {
-                yield "agency/listing/createListing";
-            }
-        };
     }
 
 // 
@@ -149,7 +204,7 @@ public class ListingController {
         form.setProperty(house);
         form.setPropertyType("house");
         finalizeListing(form, agency);
-        return "redirect:/agency/listing";
+        return "redirect:/agency/listing?status=pending";
     }
 
     private String handleApartmentCreation(Listing form, Agency agency, List<MultipartFile> images) {
@@ -167,7 +222,7 @@ public class ListingController {
         form.setProperty(apartment);
         form.setPropertyType("apartment");
         finalizeListing(form, agency);
-        return "redirect:/agency/listing";
+        return "redirect:/agency/listing?status=pending";
     }
 
     private String handleLandCreation(Listing form, Agency agency, List<MultipartFile> images) {
@@ -179,7 +234,7 @@ public class ListingController {
         form.setProperty(land);
         form.setPropertyType("land");
         finalizeListing(form, agency);
-        return "redirect:/agency/listing";
+        return "redirect:/agency/listing?status=pending";
     }
 
 // Helper method to populate shared fields

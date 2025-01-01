@@ -33,15 +33,14 @@
                             <div class="d-flex align-items-center me-auto">
                                 <div class="rounded-circle bg-light d-flex align-items-center justify-content-center"
                                     style="width: 48px; height: 48px;">
-                                    <img src="https://cdn.chotot.com/uac2/27674407" alt=""
-                                        class="rounded-circle img-fluid">
+                                    <img src="/images/avatar/${avatar}" alt="" class="rounded-circle img-fluid">
                                 </div>
                                 <div class="ms-3">
-                                    <h5 class="mb-0 fw-bold">Quân Phan Hoàng Minh</h5>
+                                    <h5 class="mb-0 fw-bold">${fullName}</h5>
                                     <a href="#" class="text-decoration-none text-primary d-flex align-items-center">
                                         <img src="https://static.chotot.com/storage/ads-dashboard/svg/Plus-outline.svg"
                                             alt="Add Icon" style="width: 16px; margin-right: 5px;">
-                                        <span>Tạo cửa hàng</span>
+
                                     </a>
                                 </div>
                             </div>
@@ -52,61 +51,90 @@
                     </div>
                     <div class="bg-white border-top border-bottom">
                         <div class="container d-flex flex-nowrap overflow-auto">
-                            <button class="btn btn-link text-dark px-3">ĐANG HIỂN THỊ (0)</button>
-                            <button class="btn btn-link text-dark px-3">BỊ TỪ CHỐI (1)</button>
-                            <button class="btn btn-link text-dark px-3">CHỜ DUYỆT (0)</button>
-                            <button class="btn btn-link text-dark px-3">ĐÃ ẨN (1)</button>
+                            <a href="/agency/listing?status=displaying" class="btn btn-link text-dark px-3">ĐANG HIỂN
+                                THỊ (${displayingCount})</a>
+                            <a href="/agency/listing?status=rejected" class="btn btn-link text-dark px-3">BỊ TỪ CHỐI
+                                (${rejectedCount})</a>
+                            <a href="/agency/listing?status=pending" class="btn btn-link text-dark px-3">CHỜ DUYỆT
+                                (${pendingCount})</a>
+                            <a href="/agency/listing?status=hidden" class="btn btn-link text-dark px-3">ĐÃ ẨN
+                                (${hiddenCount})</a>
                         </div>
                     </div>
                     <div class="container mt-2">
                         <div class="row">
                             <!-- Main Content -->
                             <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body d-flex mb-3 ">
-                                        <!-- Image -->
-                                        <div class="position-relative p-2">
-                                            <img src="https://cdn.chotot.com/_IhIZO0Yjg0RZUhYZx2h9ntNIBjjOk7QnPRE7jYA3tc/preset:listing/plain/f5ae778fea80af0f74c3229e8168dca7-2911484381406458818.jpg"
-                                                alt="Listing Image" class="img-fluid rounded w-200 "
-                                                style="max-width: 200px; height: auto;">
+                                <c:if test="${empty listings.content}">
+                                    <p>No listings available.</p>
+                                </c:if>
+                                <c:if test="${not empty listings.content}">
+                                    <c:forEach var="listing" items="${listings.content}">
+                                        <div class="card mb-2">
+                                            <div class="card-body d-flex mb-3 ">
+                                                <!-- Image -->
+                                                <div class="position-relative p-2">
+                                                    <img src="/images/images/listing/${listing.property.propertyImages[0]}"
+                                                        alt="Listing Image" alt="Listing Image"
+                                                        class="img-fluid rounded w-200 "
+                                                        style="max-width: 200px; height: auto;">
 
-                                        </div>
-                                        <div class="p-2">
-                                            <h5 class="card-title text-truncate">Test Đăng Bài</h5>
-                                            <p class="text-danger fw-bold mb-0">9.000.000.000 đ</p>
-                                            <p class="text-muted small">Phường 4, Quận 3, Tp Hồ Chí Minh</p>
-                                        </div>
-                                        <!-- Details -->
+                                                </div>
+                                                <div class="p-2">
+                                                    <h5 class="card-title text-truncate">${listing.listingTitle}</h5>
+                                                    <p class="text-danger fw-bold mb-0">
+                                                        ${listing.property.propertyPrice}</p>
+                                                    <p class="text-muted small">${listing.property.propertyPrice}</p>
+                                                </div>
+                                                <!-- Details -->
 
-                                        <div class="ms-auto p-2">
-                                            <a href="#!" class="btn btn-warning mx-2 ">
-                                                <i class="fa-solid fa-pencil"></i>
-                                            </a>
-                                            <a href="#!" class="btn btn-danger mx-2">
-                                                <i class="fa-solid fa-xmark"></i>
-                                            </a>
+                                                <div class="ms-auto p-2">
+                                                    <a href="/agency/listing/edit/${listing.id}"
+                                                        class="btn btn-warning mx-2 ">
+                                                        <i class="fa-solid fa-pencil"></i>
+                                                    </a>
+                                                    <a href="/agency/listing/delete/${listing.id}"
+                                                        class="btn btn-danger mx-2">
+                                                        <i class="fa-solid fa-xmark"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    </c:forEach>
+                                </c:if>
                             </div>
                         </div>
-                        <nav aria-label="Navigation">
-                            <ul class="pagination justify-content-center my-2">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <c:if test="${not empty listings && listings.totalPages > 1}">
+                            <nav aria-label="Navigation">
+                                <ul class="pagination justify-content-center my-2">
+                                    <c:if test="${listings.hasPrevious()}">
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                                href="?status=${param.status}&page=${listings.number - 1}&size=${listings.size}"
+                                                aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                    </c:if>
+                                    <c:forEach var="i" begin="0" end="${listings.totalPages - 1}">
+                                        <li class="page-item ${i == listings.number ? 'active' : ''}">
+                                            <a class="page-link"
+                                                href="?status=${param.status}&page=${i}&size=${listings.size}">${i +
+                                                1}</a>
+                                        </li>
+                                    </c:forEach>
+                                    <c:if test="${listings.hasNext()}">
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                                href="?status=${param.status}&page=${listings.number + 1}&size=${listings.size}"
+                                                aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    </c:if>
+                                </ul>
+                            </nav>
+                        </c:if>
                     </div>
                     <jsp:include page="../layout/footer.jsp" />
             </body>

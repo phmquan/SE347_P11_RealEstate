@@ -45,7 +45,10 @@
                         <div class="bg-white p-4 shadow-sm rounded p-3">
                             <h1 class="mt-4">Tạo bài đăng</h1>
                             <ol class="breadcrumb mb-4">
-                                <li class="breadcrumb-item"><a href="/agency">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/agency/listing">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/agency/listing/create?type=null">Choose Create
+                                        Listing</a>
+                                </li>
                                 <li class="breadcrumb-item active">Tạo bài đăng BĐS đất</li>
                             </ol>
                             <div class="container mt-3">

@@ -10,9 +10,12 @@ import vn.uit.realestate.domain.ListingStatus;
 
 @Repository
 public interface ListingRepository extends JpaRepository<Listing, Long> {
-  List<Listing> findByListingTitleContaining(String keyword);
 
-  Page<Listing> findByStatus(ListingStatus status, Pageable pageable);
+    List<Listing> findByListingTitleContaining(String keyword);
 
-  List<Listing> findByStatus(ListingStatus status);
+    Page<Listing> findByStatus(ListingStatus status, Pageable pageable);
+
+    List<Listing> findByStatus(ListingStatus status);
+
+    long countByStatus(ListingStatus status);
 }
