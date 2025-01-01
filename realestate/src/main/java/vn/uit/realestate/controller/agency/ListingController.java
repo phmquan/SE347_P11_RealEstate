@@ -57,14 +57,16 @@ public class ListingController {
             model.addAttribute("error", "Session expired. Please log in again.");
             return "redirect:/login";
         } else {
+
             model.addAttribute("fullName", session.getAttribute("fullName"));
             model.addAttribute("avatar", session.getAttribute("avatar"));
 
         }
-        long displayingCount = listingService.countByStatus(ListingStatus.DISPLAYING);
-        long rejectedCount = listingService.countByStatus(ListingStatus.DECLINED);
-        long pendingCount = listingService.countByStatus(ListingStatus.PENDING);
-        long hiddenCount = listingService.countByStatus(ListingStatus.HIDDEN);
+        Agency currentAgency = agencyService.getAgencyByEmail(session.getAttribute("email").toString());
+        long displayingCount = listingService.countByStatusAndAgencyId(ListingStatus.DISPLAYING, currentAgency);
+        long rejectedCount = listingService.countByStatusAndAgencyId(ListingStatus.DECLINED, currentAgency);
+        long pendingCount = listingService.countByStatusAndAgencyId(ListingStatus.PENDING, currentAgency);
+        long hiddenCount = listingService.countByStatusAndAgencyId(ListingStatus.HIDDEN, currentAgency);
         model.addAttribute("displayingCount", displayingCount);
         model.addAttribute("rejectedCount", rejectedCount);
         model.addAttribute("pendingCount", pendingCount);
@@ -75,25 +77,25 @@ public class ListingController {
             Page<Listing> listings;
             switch (type) {
                 case "pending" -> {
-                    listings = listingService.getAllListingsByStatus(ListingStatus.PENDING, pageable);
+                    listings = listingService.getAllListingsByStatusAndAgencyId(ListingStatus.PENDING, currentAgency, pageable);
 
                     model.addAttribute("listings", listings);
                     break;
                 }
                 case "displaying" -> {
-                    listings = listingService.getAllListingsByStatus(ListingStatus.DISPLAYING, pageable);
+                    listings = listingService.getAllListingsByStatusAndAgencyId(ListingStatus.DISPLAYING, currentAgency, pageable);
 
                     model.addAttribute("listings", listings);
                     break;
                 }
                 case "rejected" -> {
-                    listings = listingService.getAllListingsByStatus(ListingStatus.DECLINED, pageable);
+                    listings = listingService.getAllListingsByStatusAndAgencyId(ListingStatus.DECLINED, currentAgency, pageable);
 
                     model.addAttribute("listings", listings);
                     break;
                 }
                 case "hidden" -> {
-                    listings = listingService.getAllListingsByStatus(ListingStatus.HIDDEN, pageable);
+                    listings = listingService.getAllListingsByStatusAndAgencyId(ListingStatus.HIDDEN, currentAgency, pageable);
 
                     model.addAttribute("listings", listings);
                     break;

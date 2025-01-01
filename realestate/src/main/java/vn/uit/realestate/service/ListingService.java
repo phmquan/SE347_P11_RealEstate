@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import vn.uit.realestate.domain.Agency;
 import vn.uit.realestate.domain.Listing;
 import vn.uit.realestate.domain.ListingStatus;
 import vn.uit.realestate.repository.ListingRepository;
@@ -30,6 +31,10 @@ public class ListingService {
         return listingRepository.findByStatus(status, pageable);
     }
 
+    public Page<Listing> getAllListingsByStatusAndAgencyId(ListingStatus status, Agency agency, Pageable pageable) {
+        return listingRepository.findByStatusAndAgencyId(status, agency.getId(), pageable);
+    }
+
     public List<Listing> getAllListingsByStatus(ListingStatus status) {
         return listingRepository.findByStatus(status);
     }
@@ -48,6 +53,10 @@ public class ListingService {
 
     public long countByStatus(ListingStatus status) {
         return listingRepository.countByStatus(status);
+    }
+
+    public long countByStatusAndAgencyId(ListingStatus status, Agency agency) {
+        return listingRepository.countByStatusAndAgencyId(status, agency.getId());
     }
 
     public Listing updateListing(Long id, Listing updatedListing) {
