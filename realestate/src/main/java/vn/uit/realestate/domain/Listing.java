@@ -1,7 +1,14 @@
 package vn.uit.realestate.domain;
 
+import java.time.Instant;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,14 +18,10 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
-import java.time.Instant;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 @Getter
 @Setter
@@ -36,8 +39,6 @@ public class Listing {
 
     private String listingType; // sale, rent
 
-    private String listingStatus; // active, inactive, pending
-
     @NotBlank(message = "Tiêu đề không được để trống")
     @Size(min = 5, max = 50, message = "Tiêu đề phải có ít nhất 5 kí tự")
     private String listingTitle;
@@ -49,8 +50,8 @@ public class Listing {
 
     private String propertyType; // House, Apartment, Land
 
-    @NotNull
-    private ListingStatus status = ListingStatus.PENDING;
+    @Enumerated(EnumType.STRING)
+    private ListingStatus status;
 
     @Valid
     @OneToOne

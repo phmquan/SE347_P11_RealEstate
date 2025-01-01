@@ -83,8 +83,11 @@
                                                 <div class="p-2">
                                                     <h5 class="card-title text-truncate">${listing.listingTitle}</h5>
                                                     <p class="text-danger fw-bold mb-0">
-                                                        ${listing.property.propertyPrice}</p>
-                                                    <p class="text-muted small">${listing.property.propertyPrice}</p>
+                                                        <fmt:formatNumber value="${listing.property.propertyPrice}"
+                                                            type="currency" currencySymbol="đ " maxFractionDigits="0"
+                                                            minFractionDigits="0" />
+                                                    </p>
+                                                    <p class="text-muted small">${listing.property.address}</p>
                                                 </div>
                                                 <!-- Details -->
 

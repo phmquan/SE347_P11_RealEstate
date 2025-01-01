@@ -258,7 +258,7 @@ public class ListingController {
 
 // Helper method to finalize listing
     private void finalizeListing(Listing listing, Agency agency) {
-        listing.setListingStatus("pending");
+        listing.setStatus(ListingStatus.PENDING);
         listing.setAgency(agency);
         listingService.addListing(listing);  // Persist listing
     }
@@ -291,12 +291,32 @@ public class ListingController {
                                     .toList());
         }
         listingService.updateListing(id, property);
-        return "redirect:/admin/listings";
+        return "redirect:/admin/listing?status=pending";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteListingForm(@PathVariable("id") Long id, Model model) {
+        listingService
+                .getListingById(id)
+                .ifPresentOrElse(
+                        listing -> model.addAttribute("listing", listing),
+                        () -> {
+                            throw new IllegalArgumentException("Listing not found");
+                        });
+        long displayingCount = listingService.countByStatus(ListingStatus.DISPLAYING);
+        long rejectedCount = listingService.countByStatus(ListingStatus.DECLINED);
+        long pendingCount = listingService.countByStatus(ListingStatus.PENDING);
+        long hiddenCount = listingService.countByStatus(ListingStatus.HIDDEN);
+        model.addAttribute("displayingCount", displayingCount);
+        model.addAttribute("rejectedCount", rejectedCount);
+        model.addAttribute("pendingCount", pendingCount);
+        model.addAttribute("hiddenCount", hiddenCount);
+        return "agency/listing/delete";
     }
 
     @PostMapping("/delete/{id}")
     public String deleteListing(@PathVariable("id") Long id) {
         listingService.deleteListing(id);
-        return "redirect:/admin/listings";
+        return "redirect:/agency/listing?status=pending";
     }
 }

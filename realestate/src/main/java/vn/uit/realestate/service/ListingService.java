@@ -2,10 +2,12 @@ package vn.uit.realestate.service;
 
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
 import vn.uit.realestate.domain.Listing;
 import vn.uit.realestate.domain.ListingStatus;
 import vn.uit.realestate.repository.ListingRepository;
@@ -54,7 +56,7 @@ public class ListingService {
                 .map(
                         listing -> {
                             listing.setListingType(updatedListing.getListingType());
-                            listing.setListingStatus(updatedListing.getListingStatus());
+                            listing.setStatus(updatedListing.getStatus());
                             listing.setListingTitle(updatedListing.getListingTitle());
                             listing.setListingDescription(updatedListing.getListingDescription());
                             listing.setPropertyType(updatedListing.getPropertyType());
@@ -65,7 +67,13 @@ public class ListingService {
     }
 
     public void deleteListing(Long id) {
-        listingRepository.deleteById(id);
+        Listing currentListing = listingRepository.findById(id).isPresent() ? listingRepository.findById(id).get() : null;
+        if (currentListing != null) {
+            currentListing.setStatus(ListingStatus.HIDDEN);
+            listingRepository.save(currentListing);
+        } else {
+            throw new RuntimeException("Listing not found with id: " + id);
+        }
     }
 
     public List<Listing> searchListing(String keyword) {

@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-RealestateApplication<realestate>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "vn.uit.realestate.RealestateApplication",
+            "projectName": "realestate",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
