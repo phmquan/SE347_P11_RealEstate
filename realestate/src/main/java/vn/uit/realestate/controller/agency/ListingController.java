@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import vn.uit.realestate.domain.Agency;
 import vn.uit.realestate.domain.Apartment;
 import vn.uit.realestate.domain.House;
@@ -34,7 +32,7 @@ import vn.uit.realestate.service.PropertyService;
 import vn.uit.realestate.service.UploadService;
 
 @Controller
-@RequiredArgsConstructor
+
 @RequestMapping("/agency/listing")
 public class ListingController {
 
@@ -42,6 +40,14 @@ public class ListingController {
     private final AgencyService agencyService;
     private final PropertyService propertyService;
     private final UploadService uploadService;
+
+    public ListingController(ListingService listingService, AgencyService agencyService,
+            PropertyService propertyService, UploadService uploadService) {
+        this.listingService = listingService;
+        this.agencyService = agencyService;
+        this.propertyService = propertyService;
+        this.uploadService = uploadService;
+    }
 
     @GetMapping("")
     public String getAgencyHomepageListings(
@@ -148,7 +154,7 @@ public class ListingController {
             @ModelAttribute("newListing") @Valid Listing listing, // Binding happens here
             BindingResult bindingResult,
             Model model,
-            @RequestParam("propertyImage") List<MultipartFile> images,
+            @RequestParam("propertyImage") MultipartFile[] images,
             HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
@@ -192,7 +198,7 @@ public class ListingController {
 
 // 
 // Helper methods for property creation
-    private String handleHouseCreation(Listing form, Agency agency, List<MultipartFile> images) {
+    private String handleHouseCreation(Listing form, Agency agency, MultipartFile[] images) {
         // Create and save a House
         House house = new House();
         house.setHouseType("Nhà Phố");
@@ -210,7 +216,7 @@ public class ListingController {
         return "redirect:/agency/listing?status=pending";
     }
 
-    private String handleApartmentCreation(Listing form, Agency agency, List<MultipartFile> images) {
+    private String handleApartmentCreation(Listing form, Agency agency, MultipartFile[] images) {
         // Create and save an Apartment
         Apartment apartment = new Apartment();
         apartment.setApartmentType("Chung Cư");
@@ -228,7 +234,7 @@ public class ListingController {
         return "redirect:/agency/listing?status=pending";
     }
 
-    private String handleLandCreation(Listing form, Agency agency, List<MultipartFile> images) {
+    private String handleLandCreation(Listing form, Agency agency, MultipartFile[] images) {
         Land land = new Land();
         land.setLandType("Đất Nền");
         land.setLandDirection("Đông Nam");
@@ -241,7 +247,7 @@ public class ListingController {
     }
 
 // Helper method to populate shared fields
-    private void populateCommonPropertyFields(Property property, Listing listing, List<MultipartFile> images) {
+    private void populateCommonPropertyFields(Property property, Listing listing, MultipartFile[] images) {
 
         property.setAddress(listing.getProperty().getAddress());
         property.setDistrict(listing.getProperty().getDistrict());
@@ -251,10 +257,8 @@ public class ListingController {
         property.setLegalDocument(listing.getProperty().getLegalDocument());
         property.setPropertyPrice(listing.getProperty().getPropertyPrice());
 
-        if (images != null && !images.isEmpty()) {
-            List<String> imagePaths = images.stream()
-                    .map(file -> uploadService.handleSaveUploadFile(file, "/images/listing"))
-                    .toList();
+        if (images != null) {
+            List<String> imagePaths = uploadService.handleSaveUploadMultipleFile(images, "/images/listing");
             property.setPropertyImages(imagePaths);
         }
     }

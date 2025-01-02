@@ -44,6 +44,13 @@ public class AgencyController {
         return "admin/agency/create";
     }
 
+    @GetMapping("/admin/agency/{id}")
+    public String getAgencyDetail(@PathVariable("id") Long id, Model model) {
+        Agency agency = this.agencyService.getAgencyById(id);
+        model.addAttribute("agency", agency);
+        return "admin/agency/detail";
+    }
+
     @PostMapping("/admin/agency/create")
     public String createAgency(
             @ModelAttribute("newAgency") @Valid Agency agency,
@@ -59,8 +66,8 @@ public class AgencyController {
         }
         String hashedPassword = this.passwordEncoder.encode(agency.getUser().getPassword());
         agency.getUser().setPassword(hashedPassword);
-        String avataFileName = this.uploadService.handleSaveUploadFile(file, "avatar");
-        agency.getUser().setAvatar(avataFileName);
+        String avatarFileName = this.uploadService.handleSaveUploadSingleFile(file, "avatar");
+        agency.getUser().setAvatar(avatarFileName);
         agency.setActivationStatus("DEACTIVATED");
         this.agencyService.handleSaveAgency(agency);
         return "redirect:/admin/agency";

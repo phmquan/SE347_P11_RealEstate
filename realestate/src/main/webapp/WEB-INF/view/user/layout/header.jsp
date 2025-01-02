@@ -11,13 +11,13 @@
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav me-auto">
                             <li class="nav-item">
-                                <a class="nav-link active" href="#">Cho Thuê</a>
+                                <a class="nav-link active" href="user/listing?type=rent">Cho Thuê</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Mua-bán</a>
+                                <a class="nav-link" href="user/listing?type=sell">Mua-bán</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Đăng ký tài khoản môi giới</a>
+                                <a class="nav-link" href="user/agency/register">Đăng ký tài khoản môi giới</a>
                             </li>
                         </ul>
                         <div class="d-flex m-3 me-0">
