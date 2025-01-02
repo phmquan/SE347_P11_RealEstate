@@ -57,7 +57,7 @@ public class AdminListingController {
             listing.setStatus(ListingStatus.DECLINED);
         }
         listingService.addListing(listing);
-        return "admin/listing/show";
+        return "redirect:" + "/admin/listing";
 
     }
 

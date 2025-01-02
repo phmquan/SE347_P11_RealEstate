@@ -5,13 +5,15 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import vn.uit.realestate.domain.Listing;
 import vn.uit.realestate.domain.ListingStatus;
 
 @Repository
-public interface ListingRepository extends JpaRepository<Listing, Long> {
+public interface ListingRepository extends JpaRepository<Listing, Long>, ListingRepositoryCustom {
 
     List<Listing> findByListingTitleContaining(String keyword);
 
@@ -24,4 +26,5 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
     long countByStatus(ListingStatus status);
 
     long countByStatusAndAgencyId(ListingStatus status, Long agencyId);
+
 }

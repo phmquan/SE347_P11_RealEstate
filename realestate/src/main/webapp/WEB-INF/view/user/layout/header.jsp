@@ -3,7 +3,7 @@
         <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container">
-                    <a class="navbar-brand" href="#">Estatery</a>
+                    <a class="navbar-brand" href="/homepage">Estatery</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -11,10 +11,10 @@
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav me-auto">
                             <li class="nav-item">
-                                <a class="nav-link active" href="user/listing?type=rent">Cho Thuê</a>
+                                <a class="nav-link active" href="#!">Cho Thuê</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="user/listing?type=sell">Mua-bán</a>
+                                <a class="nav-link" href="#!">Mua-bán</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="user/agency/register">Đăng ký tài khoản môi giới</a>

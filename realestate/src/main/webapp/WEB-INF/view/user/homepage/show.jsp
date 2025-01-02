@@ -37,16 +37,7 @@
                                 <p>Một nơi tốt để bạn giao dịch bất động sản với không phí hoa hồng</p>
                             </div>
                             <div class="d-flex justify-content-center mt-4">
-                                <ul class="nav nav-tabs">
 
-                                    <li class="nav-item">
-                                        <a class="nav-link active" data-bs-toggle="tab"
-                                            href="user/listing?type=buy">Buy</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="user/listing?type=rent">Rent</a>
-                                    </li>
-                                </ul>
                             </div>
 
                         </div>
@@ -138,24 +129,28 @@
 
                         </div>
 
-                        <div class="pagination justify-content-center my-2 ">
-                            <c:if test="${currentPage > 0}">
-                                <a href="?page=${currentPage - 1}&size=${size}" class="btn btn-primary">Previous</a>
-                            </c:if>
-                            <c:forEach var="i" begin="0" end="${totalPages - 1}">
-                                <c:choose>
-                                    <c:when test="${i == currentPage}">
-                                        <span class="btn btn-secondary">${i + 1}</span>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <a href="?page=${i}&size=${size}" class="btn btn-primary">${i + 1}</a>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:forEach>
-                            <c:if test="${currentPage < totalPages - 1}">
-                                <a href="?page=${currentPage + 1}&size=${size}" class="btn btn-primary">Next</a>
-                            </c:if>
-                        </div>
+                        <c:if test="${totalPages > 0}">
+                            <div class="pagination justify-content-center my-2">
+                                <c:if test="${currentPage > 0}">
+                                    <a href="?page=${currentPage - 1}&size=${size}"
+                                        class="btn btn-primary mx-2">Previous</a>
+                                </c:if>
+                                <c:forEach var="i" begin="0" end="${totalPages - 1}">
+                                    <c:choose>
+                                        <c:when test="${i == currentPage}">
+                                            <span class="btn btn-secondary mx-2">${i + 1}</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <a href="?page=${i}&size=${size}" class="btn btn-primary">${i + 1}</a>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                                <c:if test="${currentPage < totalPages - 1}">
+                                    <a href="?page=${currentPage + 1}&size=${size}"
+                                        class="btn btn-primary mx-2">Next</a>
+                                </c:if>
+                            </div>
+                        </c:if>
 
 
 

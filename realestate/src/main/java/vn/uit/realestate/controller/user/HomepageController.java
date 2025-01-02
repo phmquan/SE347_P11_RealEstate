@@ -55,7 +55,7 @@ public class HomepageController {
             String role = session.getAttribute("role").toString();
             return switch (role) {
                 case "USER" ->
-                    "user/homepage/show";
+                    "redirect:/homepage";
                 case "AGENCY" ->
                     "redirect:/agency/listing?status=pending";
                 case "ADMIN" ->

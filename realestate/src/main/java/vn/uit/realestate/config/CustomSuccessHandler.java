@@ -29,7 +29,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
         Map<String, String> roleTargetUrlMap = new HashMap<>();
         roleTargetUrlMap.put("ROLE_AGENCY", "/agency/listing?status=pending");
-        roleTargetUrlMap.put("ROLE_USER", "/");
+        roleTargetUrlMap.put("ROLE_USER", "/homepage");
         roleTargetUrlMap.put("ROLE_ADMIN", "/admin");
 
         final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
