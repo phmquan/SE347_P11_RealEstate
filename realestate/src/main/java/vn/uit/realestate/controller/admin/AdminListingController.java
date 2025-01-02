@@ -5,6 +5,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +17,7 @@ import vn.uit.realestate.service.ListingService;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin/listings")
+@RequestMapping("/admin/listing")
 public class AdminListingController {
 
     private final ListingService listingService;
@@ -29,36 +30,11 @@ public class AdminListingController {
             @RequestParam(name = "status", defaultValue = "PENDING") ListingStatus status,
             @PageableDefault(
                     page = 0,
-                    size = 30,
-                    sort = {"property.propertyPrice,asc", "property.district,asc"}) Pageable pageable,
+                    size = 30) Pageable pageable,
             Model model) {
-        // the page had format like this
-        // data class PageResponse<T>(
-        //     val content: List<T>,
-        //     val totalElements: Int,
-        //     val totalPages: Int,
-        //     val last: Boolean,
-        //     val size: Int,
-        //     val number: Int,
-        //     val sort: {
-        //        val sorted: Boolean = false,
-        //        val unsorted: Boolean = true,
-        //        val empty: Boolean = true
-        //     },
-        //
-        //     val first: Boolean,
-        //     val numberOfElements: Int,
-        //     val empty: Boolean,
-        //     val pageable: {
-        //        val pageNumber: Int = 0,
-        //        val pageSize: Int,
-        //        val offset: Int,
-        //        val paged: Boolean,
-        //        val unpaged: Boolean,
-        //     }
-        // )
+
         model.addAttribute("listings", listingService.getAllListingsByStatus(status, pageable));
-        return "listings/list";
+        return "admin/listing/show";
     }
 
     @GetMapping("/no-page")
@@ -69,7 +45,7 @@ public class AdminListingController {
     }
 
     @PostMapping("/accept/{id}")
-    public Listing acceptListing(@RequestParam("status") boolean status, Long id) {
+    public String acceptListing(@RequestParam("status") boolean status, @PathVariable("id") Long id) {
         var listing
                 = listingService
                         .getListingById(id)
@@ -80,6 +56,9 @@ public class AdminListingController {
         } else {
             listing.setStatus(ListingStatus.DECLINED);
         }
-        return listingService.updateListing(listing);
+        listingService.addListing(listing);
+        return "admin/listing/show";
+
     }
+
 }

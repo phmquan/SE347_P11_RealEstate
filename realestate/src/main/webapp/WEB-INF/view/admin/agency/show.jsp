@@ -28,7 +28,7 @@
                                 <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
                                 <li class="breadcrumb-item active">Agency</li>
                             </ol>
-                            <div>Agency Table</div>
+
                             <div class="mt-5">
                                 <div class="row">
                                     <div class="mx-auto">
@@ -66,8 +66,10 @@
                                                             <td>${agency.brokerCertification.certificationNumber}</td>
                                                             <td>
                                                                 <c:choose>
-                                                                    <c:when test="${agency.activationStatus eq 'true'}">
-                                                                        <span class="badge bg-success">Active</span>
+                                                                    <c:when
+                                                                        test="${agency.activationStatus eq 'ACTIVATED'}">
+                                                                        <span
+                                                                            class="badge bg-success max-height-100">Active</span>
                                                                     </c:when>
                                                                     <c:otherwise>
                                                                         <span class="badge bg-danger">Inactive</span>
@@ -78,14 +80,30 @@
 
                                                             <td>
 
-                                                                <a href="/admin/agency/${id}"
-                                                                    class="btn btn-success">View</a>
-                                                                <a href="/admin/agency/update/${id}"
-                                                                    class="btn btn-warning">Update</a>
-                                                                <a href="/admin/agency/delete/${id}"
-                                                                    class="btn btn-danger">
-                                                                    Delete
-                                                                </a>
+                                                                <div class="d-flex gap-2">
+                                                                    <a href="/admin/agency/${id}"
+                                                                        class="btn btn-success btn-sm">View</a>
+
+                                                                    <!-- Duyệt Form -->
+                                                                    <form:form
+                                                                        action="/admin/agency/accept/${agency.id}"
+                                                                        method="post" style="display:inline;">
+                                                                        <input type="hidden" name="status"
+                                                                            value="true" />
+                                                                        <button type="submit"
+                                                                            class="btn btn-warning">Active</button>
+                                                                    </form:form>
+
+                                                                    <!-- Từ Chối Form -->
+                                                                    <form:form
+                                                                        action="/admin/agency/accept/${agency.id}"
+                                                                        method="post" style="display:inline;">
+                                                                        <input type="hidden" name="status"
+                                                                            value="false" />
+                                                                        <button type="submit"
+                                                                            class="btn btn-danger">Deactive</button>
+                                                                    </form:form>
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>

@@ -37,11 +37,7 @@
                                 </div>
                                 <div class="ms-3">
                                     <h5 class="mb-0 fw-bold">${fullName}</h5>
-                                    <a href="#" class="text-decoration-none text-primary d-flex align-items-center">
-                                        <img src="https://static.chotot.com/storage/ads-dashboard/svg/Plus-outline.svg"
-                                            alt="Add Icon" style="width: 16px; margin-right: 5px;">
 
-                                    </a>
                                 </div>
                             </div>
                             <div class="ms-auto p-2">
@@ -92,10 +88,7 @@
                                                 <!-- Details -->
 
                                                 <div class="ms-auto p-2">
-                                                    <a href="/agency/listing/edit/${listing.id}"
-                                                        class="btn btn-warning mx-2 ">
-                                                        <i class="fa-solid fa-pencil"></i>
-                                                    </a>
+
                                                     <a href="/agency/listing/delete/${listing.id}"
                                                         class="btn btn-danger mx-2">
                                                         <i class="fa-solid fa-xmark"></i>

@@ -93,6 +93,7 @@ public class ListingController {
 
                     model.addAttribute("listings", listings);
                     break;
+
                 }
                 case "hidden" -> {
                     listings = listingService.getAllListingsByStatusAndAgencyId(ListingStatus.HIDDEN, currentAgency, pageable);
@@ -275,25 +276,6 @@ public class ListingController {
                             throw new IllegalArgumentException("Listing not found");
                         });
         return "listings/edit";
-    }
-
-    @PostMapping("/edit/{id}")
-    @Transactional
-    public String updateListing(
-            @RequestParam("new_images") List<MultipartFile> newImages,
-            @PathVariable("id") Long id,
-            @ModelAttribute("listing") Listing property) {
-        if (newImages != null && !newImages.isEmpty()) {
-            property
-                    .getProperty()
-                    .getPropertyImages()
-                    .addAll(
-                            newImages.stream()
-                                    .map(file -> uploadService.handleSaveUploadFile(file, "/images/listing"))
-                                    .toList());
-        }
-        listingService.updateListing(id, property);
-        return "redirect:/admin/listing?status=pending";
     }
 
     @GetMapping("/delete/{id}")

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import vn.uit.realestate.domain.Agency;
+import vn.uit.realestate.domain.ListingStatus;
 import vn.uit.realestate.service.AgencyService;
 import vn.uit.realestate.service.BrokerCertificationService;
 import vn.uit.realestate.service.UploadService;
@@ -24,69 +25,60 @@ import vn.uit.realestate.service.UserService;
 @RequiredArgsConstructor
 public class AgencyController {
 
-  private final UserService userService;
-  private final AgencyService agencyService;
-  private final PasswordEncoder passwordEncoder;
-  private final UploadService uploadService;
-  private final BrokerCertificationService brokerCertificationService;
+    private final UserService userService;
+    private final AgencyService agencyService;
+    private final PasswordEncoder passwordEncoder;
+    private final UploadService uploadService;
+    private final BrokerCertificationService brokerCertificationService;
 
-  @GetMapping("/admin/agency")
-  public String getAgencyPage(Model model) {
-    List<Agency> agencies = this.agencyService.getAllAgency();
-    model.addAttribute("agencies", agencies);
-    return "admin/agency/show";
-  }
-
-  @GetMapping("/admin/agency/create")
-  public String createAgencyPage(Model model) {
-    model.addAttribute("newAgency", new Agency());
-    return "admin/agency/create";
-  }
-
-  @PostMapping("/admin/agency/create")
-  public String createAgency(
-      @ModelAttribute("newAgency") @Valid Agency agency,
-      BindingResult bindingResult,
-      Model model,
-      @RequestParam("file") MultipartFile file) {
-    List<FieldError> errors = bindingResult.getFieldErrors();
-    for (FieldError error : errors) {
-      System.out.println(error.getField() + " " + error.getDefaultMessage());
+    @GetMapping("/admin/agency")
+    public String getAgencyPage(Model model) {
+        List<Agency> agencies = this.agencyService.getAllAgency();
+        model.addAttribute("agencies", agencies);
+        return "admin/agency/show";
     }
-    if (bindingResult.hasErrors()) {
-      return "admin/agency/create";
-    }
-    String hashedPassword = this.passwordEncoder.encode(agency.getUser().getPassword());
-    agency.getUser().setPassword(hashedPassword);
-    String avataFileName = this.uploadService.handleSaveUploadFile(file, "avatar");
-    agency.getUser().setAvatar(avataFileName);
-    this.agencyService.handleSaveAgency(agency);
-    return "redirect:/admin/agency";
-  }
 
-  @GetMapping("/admin/agency/update/{id}")
-  public String updateAgencyPage(@PathVariable("id") Long id, Model model) {
-    Agency agency = this.agencyService.getAgencyById(id);
-    model.addAttribute("updateAgency", agency);
-    return "admin/agency/update";
-  }
-
-  @PostMapping("/admin/agency/update")
-  public String handleUpdateAgency(
-      @ModelAttribute("updateAgency") @Valid Agency agency,
-      BindingResult bindingResult,
-      Model model,
-      @RequestParam("file") MultipartFile file) {
-    Agency currentAgency = this.agencyService.getAgencyById(agency.getId());
-    if (currentAgency == null) {
-      throw new IllegalArgumentException("Agency not found");
-    } else {
-      String hashedPassword = this.passwordEncoder.encode(agency.getUser().getPassword());
-      currentAgency.getUser().setPassword(hashedPassword);
-      String avataFileName = this.uploadService.handleSaveUploadFile(file, "avatar");
-      currentAgency.getUser().setAvatar(avataFileName);
-      this.agencyService.handleUpdateAgency(currentAgency);
+    @GetMapping("/admin/agency/create")
+    public String createAgencyPage(Model model) {
+        model.addAttribute("newAgency", new Agency());
+        return "admin/agency/create";
     }
-    return "redirect:/admin/agency";
-  }
+
+    @PostMapping("/admin/agency/create")
+    public String createAgency(
+            @ModelAttribute("newAgency") @Valid Agency agency,
+            BindingResult bindingResult,
+            Model model,
+            @RequestParam("file") MultipartFile file) {
+        List<FieldError> errors = bindingResult.getFieldErrors();
+        for (FieldError error : errors) {
+            System.out.println(error.getField() + " " + error.getDefaultMessage());
+        }
+        if (bindingResult.hasErrors()) {
+            return "admin/agency/create";
+        }
+        String hashedPassword = this.passwordEncoder.encode(agency.getUser().getPassword());
+        agency.getUser().setPassword(hashedPassword);
+        String avataFileName = this.uploadService.handleSaveUploadFile(file, "avatar");
+        agency.getUser().setAvatar(avataFileName);
+        agency.setActivationStatus("DEACTIVATED");
+        this.agencyService.handleSaveAgency(agency);
+        return "redirect:/admin/agency";
+    }
+
+    @PostMapping("/admin/agency/accept/{id}")
+    public String acceptAgency(@RequestParam("status") boolean status, @PathVariable("id") Long id) {
+        var agency
+                = agencyService
+                        .getAgencyById(id);
+
+        if (status) {
+            agency.setActivationStatus("ACTIVATED");
+        } else {
+            agency.setActivationStatus("DEACTIVATED");
+        }
+        agencyService.saveAgencyWithoutReturn(agency);
+        return "redirect:/admin/agency";
+
+    }
 }

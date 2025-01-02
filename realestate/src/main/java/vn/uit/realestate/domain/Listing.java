@@ -59,14 +59,14 @@ public class Listing {
     private Property property;
 
     @CreatedDate
-    @Null
+
     // This field is automatically set by Spring Data when a new entity is created
     // When user need to retrieve the created date of an entity, they can use this field and change to
     // local date time
     private Instant createdDate;
 
     @LastModifiedDate
-    @Null
+
     // This field is automatically set by Spring Data when an entity is updated
     // When user need to retrieve the updated date of an entity, they can use this field and change
     // to
